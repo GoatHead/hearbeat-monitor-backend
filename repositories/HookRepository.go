@@ -23,7 +23,7 @@ func GetHook(hook *models.Hook) (*[]models.Hook, error){
 		query = ` SELECT * FROM hook h
 				WHERE id = ?`
 		err = db.Select(&hooks, query, hook.Id)
-		param += "hook.id=" + strconv.Itoa(hook.Id)
+		param += "id=" + strconv.Itoa(hook.Id)
 	}
 
 	logger.Write([]byte("query:" + query + "\n"))
@@ -44,7 +44,7 @@ func AddHook(hook *models.Hook) error {
 
 	param := "param: "
 	param +=  "url=" + hook.Url
-	param +=  "name=" + hook.Name
+	param +=  "; name=" + hook.Name
 	param +=  "\n"
 
 	logger := gin.DefaultWriter
@@ -67,8 +67,8 @@ func UpdateHook(hook *models.Hook) error {
 
 	param := "param: "
 	param +=  "id=" + strconv.Itoa(hook.Id)
-	param +=  "url=" + hook.Url
-	param +=  "name=" + hook.Name
+	param +=  "; url=" + hook.Url
+	param +=  "; name=" + hook.Name
 	param +=  "\n"
 	err := tx.Commit()
 
