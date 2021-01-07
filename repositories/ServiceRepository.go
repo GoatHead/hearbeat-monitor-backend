@@ -62,7 +62,6 @@ func UpdateService(service *models.Service) error {
 	tx := db.MustBegin()
 	query := ` UPDATE service SET url = :url,
 							name = :name,
-                    		status = :status,
 							 update_dt = current_timestamp
 				WHERE id = :id`
 	tx.NamedExec(query, &service)
@@ -72,7 +71,6 @@ func UpdateService(service *models.Service) error {
 	param +=  "id=" + strconv.Itoa(service.Id)
 	param +=  "; url=" + service.Url
 	param +=  "; name=" + service.Name
-	param +=  "; status=" + strconv.Itoa(service.Status)
 	param +=  "\n"
 
 	logger := gin.DefaultWriter

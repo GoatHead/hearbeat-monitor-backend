@@ -8,8 +8,7 @@ import (
 var firstRun = true
 
 var defaultSchema = `
-DROP TABLE IF EXISTS service;
-CREATE TABLE service (
+CREATE TABLE IF NOT EXISTS service (
 	id    INTEGER PRIMARY KEY autoincrement,
 	url  VARCHAR(1000) DEFAULT '',
     name VARCHAR(80)  DEFAULT '' UNIQUE ,
@@ -18,8 +17,7 @@ CREATE TABLE service (
   	update_dt datetime default current_timestamp
 );
 
-DROP TABLE IF EXISTS service_history;
-CREATE TABLE service_history (
+CREATE TABLE IF NOT EXISTS service_history (
 	id    INTEGER PRIMARY KEY autoincrement,
 	url  VARCHAR(1000) DEFAULT '',
     name VARCHAR(80)  DEFAULT '',
@@ -27,8 +25,7 @@ CREATE TABLE service_history (
 	create_dt datetime default current_timestamp
 );
 
-DROP TABLE IF EXISTS hook;
-CREATE TABLE hook (
+CREATE TABLE IF NOT EXISTS hook (
 	id    INTEGER PRIMARY KEY autoincrement,
 	url  VARCHAR(1000) DEFAULT '',
 	type  VARCHAR(10) DEFAULT 'MS_TEAMS',
