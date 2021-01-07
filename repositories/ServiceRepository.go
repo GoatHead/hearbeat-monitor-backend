@@ -81,6 +81,29 @@ func UpdateService(service *models.Service) error {
 	return err
 }
 
+func UpdateServiceStatusCode(service *models.Service) error {
+	db, _ := database.GetDbConnector()
+
+	tx := db.MustBegin()
+	query := ` UPDATE service SET status = :status,
+							 update_dt = current_timestamp
+				WHERE id = :id`
+	tx.NamedExec(query, &service)
+	err := tx.Commit()
+
+	param := "param: "
+	param +=  "id=" + strconv.Itoa(service.Id)
+	param +=  "; status=" + strconv.Itoa(service.Status)
+	param +=  "\n"
+
+	logger := gin.DefaultWriter
+
+	logger.Write([]byte("query:" + query + "\n"))
+	logger.Write([]byte(param + "\n"))
+
+	return err
+}
+
 func DeleteService(service *models.Service) error {
 	db, _ := database.GetDbConnector()
 
