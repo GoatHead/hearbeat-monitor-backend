@@ -5,12 +5,15 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"goathead/heartbeat-monitor-backend/controllers"
 	"goathead/heartbeat-monitor-backend/core/database"
+	"net/http"
+	"time"
 )
 
 func main() {
 	r := gin.Default()
 
 	r.Use(CORSMiddleware())
+
 	database.GetDbConnector()
 
 	r.GET("/api/hook", controllers.GetHook)
@@ -26,7 +29,18 @@ func main() {
 	r.GET("/api/application-settings", controllers.GetApplicationSettings)
 	r.PUT("/api/application-settings", controllers.UpdateApplicationSettings)
 
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	r.POST("/api/heartbeat/test", controllers.TestList)
+	r.POST("/api/heartbeat/testAll", controllers.TestAll)
+
+	s := &http.Server{
+		Addr:           ":8080",
+		Handler:        r,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+
+	s.ListenAndServe()
 }
 
 func CORSMiddleware() gin.HandlerFunc {
