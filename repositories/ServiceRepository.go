@@ -1,7 +1,9 @@
 package repositories
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
 	"goathead/heartbeat-monitor-backend/core/database"
 	"goathead/heartbeat-monitor-backend/core/models"
 	"strconv"
@@ -24,6 +26,29 @@ func GetService(service *models.Service) (*[]models.Service, error){
 	}
 
 	err := db.Select(&services, query)
+
+	db.Close()
+
+	logger := gin.DefaultWriter
+	logger.Write([]byte("query:" + query + "\n"))
+	logger.Write([]byte(param + "\n"))
+
+	return &services, err
+}
+
+func GetServiceByIdList(idList []int) (*[]models.Service, error){
+	db, _ := database.GetDbConnector()
+
+	var services []models.Service
+
+	query := ""
+	param := "param: "
+
+	query, args, _ := sqlx.In("SELECT * FROM service s WHERE id IN (?);", idList)
+	param += "ids=" + fmt.Sprint(idList)
+
+	query = db.Rebind(query)
+	err := db.Select(&services, query, args...)
 
 	db.Close()
 

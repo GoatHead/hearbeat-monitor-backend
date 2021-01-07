@@ -10,6 +10,11 @@ func GetService(service *models.Service) (*[]models.Service, error) {
 	return services, err
 }
 
+func GetServiceByIdList(idList []int) (*[]models.Service, error) {
+	services, err := repositories.GetServiceByIdList(idList)
+	return services, err
+}
+
 func AddService(service *models.Service) error {
 	err := repositories.AddService(service)
 	return err
