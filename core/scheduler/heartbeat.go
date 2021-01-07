@@ -2,6 +2,7 @@ package scheduler
 
 import (
 	"github.com/gin-gonic/gin"
+	"goathead/heartbeat-monitor-backend/core/webclient"
 	"goathead/heartbeat-monitor-backend/repositories"
 	"goathead/heartbeat-monitor-backend/services"
 	"strconv"
@@ -63,6 +64,24 @@ func heartBeat() {
 
 			}
 
+		}
+
+		hookList, _ := services.GetHook(nil)
+		if hookList != nil {
+			if len(*hookList) > 0 {
+
+				for _, hook := range *hookList {
+
+					url := hook.Url
+					hookType := hook.Type
+
+					if hookType == "MS_TEAMS" {
+						logger.Write([]byte("HOOK TO: " + url))
+						webclient.Post(url, `{"text": "1"}`)
+					}
+
+				}
+			}
 		}
 	}
 }

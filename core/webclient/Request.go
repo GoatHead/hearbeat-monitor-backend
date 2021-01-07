@@ -21,3 +21,10 @@ func Request(url string) int {
 
 	return resultCode
 }
+
+func Post(url string, body string) {
+	reader := strings.NewReader(body)
+	request, _ := http.NewRequest("POST", url, reader)
+	client := &http.Client{}
+	client.Do(request)
+}
