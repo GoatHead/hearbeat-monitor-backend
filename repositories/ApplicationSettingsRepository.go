@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func GetApplicationSettings(hook *models.ApplicationSettings) (*models.ApplicationSettings, error){
+func GetApplicationSettings(setting *models.ApplicationSettings) (*models.ApplicationSettings, error){
 	logger := gin.DefaultWriter
 	db, _ := database.GetDbConnector()
 
@@ -16,14 +16,14 @@ func GetApplicationSettings(hook *models.ApplicationSettings) (*models.Applicati
 	query := ""
 	param := "param: "
 	var err error
-	if hook == nil {
+	if setting == nil {
 		query = ` SELECT * FROM application_settings h `
 		err = db.Select(&settings, query)
 	} else {
 		query = ` SELECT * FROM application_settings h
 				WHERE id = ?`
-		err = db.Select(&settings, query, hook.Id)
-		param += "id=" + strconv.Itoa(hook.Id)
+		err = db.Select(&settings, query, setting.Id)
+		param += "id=" + strconv.Itoa(setting.Id)
 	}
 
 	logger.Write([]byte("query:" + query + "\n"))
@@ -34,17 +34,17 @@ func GetApplicationSettings(hook *models.ApplicationSettings) (*models.Applicati
 	return &settings[0], err
 }
 
-func UpdateApplicationSettings(hook *models.ApplicationSettings) error {
+func UpdateApplicationSettings(setting *models.ApplicationSettings) error {
 	db, _ := database.GetDbConnector()
 
 	tx := db.MustBegin()
 	query := ` UPDATE application_settings SET cycleSec = :cycleSec
 				WHERE id = :id`
-	tx.NamedExec(query, &hook)
+	tx.NamedExec(query, &setting)
 
 	param := "param: "
-	param +=  "id=" + strconv.Itoa(hook.Id)
-	param +=  "; cycleSec=" + hook.CycleSec
+	param +=  "id=" + strconv.Itoa(setting.Id)
+	param +=  "; cycleSec=" + strconv.Itoa(setting.CycleSec)
 	param +=  "\n"
 	err := tx.Commit()
 

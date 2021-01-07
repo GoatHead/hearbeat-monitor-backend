@@ -5,6 +5,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"goathead/heartbeat-monitor-backend/controllers"
 	"goathead/heartbeat-monitor-backend/core/database"
+	"goathead/heartbeat-monitor-backend/core/scheduler"
 	"net/http"
 	"time"
 )
@@ -15,6 +16,8 @@ func main() {
 	r.Use(CORSMiddleware())
 
 	database.GetDbConnector()
+
+	scheduler.ScheduledHeartBeat()
 
 	r.GET("/api/hook", controllers.GetHook)
 	r.POST("/api/hook", controllers.AddHook)
