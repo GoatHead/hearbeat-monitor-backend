@@ -8,6 +8,14 @@ import (
 var firstRun = true
 
 var defaultSchema = `
+CREATE TABLE IF NOT EXISTS application_settings (
+	id    INTEGER PRIMARY KEY autoincrement,
+	cycleSec  INTEGER DEFAULT 300
+);
+
+INSERT INTO application_settings (cycleSec)
+SELECT 300 WHERE NOT EXISTS(SELECT * FROM application_settings);
+
 CREATE TABLE IF NOT EXISTS service (
 	id    INTEGER PRIMARY KEY autoincrement,
 	url  VARCHAR(1000) DEFAULT '',
