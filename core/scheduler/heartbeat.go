@@ -2,6 +2,7 @@ package scheduler
 
 import (
 	"github.com/gin-gonic/gin"
+	message_builder "goathead/heartbeat-monitor-backend/core/message-builder"
 	"goathead/heartbeat-monitor-backend/core/webclient"
 	"goathead/heartbeat-monitor-backend/repositories"
 	"goathead/heartbeat-monitor-backend/services"
@@ -76,8 +77,10 @@ func heartBeat() {
 					hookType := hook.Type
 
 					if hookType == "MS_TEAMS" {
-						logger.Write([]byte("HOOK TO: " + url))
-						webclient.Post(url, `{"text": "1"}`)
+						logger.Write([]byte("HOOK TO: " + url + "\n"))
+						payload := message_builder.Build(*serviceList)
+						logger.Write([]byte("PAYLOAD: " + payload + "\n"))
+						webclient.Post(url, payload)
 					}
 
 				}
