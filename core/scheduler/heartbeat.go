@@ -61,6 +61,7 @@ func heartBeat() {
 				log += "; status: " + strconv.Itoa(statusCode) + "\n"
 				log += "===============\n"
 				logger.Write([]byte(log))
+				_ = repositories.AddServiceHistory(&service)
 				_ = repositories.UpdateServiceStatusCode(&service)
 
 			}

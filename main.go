@@ -29,6 +29,8 @@ func main() {
 	r.PUT("/api/service", controllers.UpdateService)
 	r.DELETE("/api/service", controllers.DeleteService)
 
+	r.GET("/api/history", controllers.GetServiceHistory)
+
 	r.GET("/api/application-settings", controllers.GetApplicationSettings)
 	r.PUT("/api/application-settings", controllers.UpdateApplicationSettings)
 
