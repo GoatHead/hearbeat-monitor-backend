@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS service (
 	url  VARCHAR(1000) DEFAULT '',
     name VARCHAR(80)  DEFAULT '' UNIQUE ,
 	status INTEGER DEFAULT NULL,
-	create_dt datetime default current_timestamp,
-  	update_dt datetime default current_timestamp
+	create_dt datetime default (datetime('now', 'localtime')),
+  	update_dt datetime default (datetime('now', 'localtime'))
 );
 
 CREATE TABLE IF NOT EXISTS service_history (
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS service_history (
 	url  VARCHAR(1000) DEFAULT '',
     name VARCHAR(80)  DEFAULT '',
 	status INTEGER DEFAULT NULL,
-	create_dt datetime default current_timestamp
+	create_dt datetime default (datetime('now', 'localtime'))
 );
 
 CREATE TABLE IF NOT EXISTS hook (
@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS hook (
 	url  VARCHAR(1000) DEFAULT '',
 	type  VARCHAR(10) DEFAULT 'MS_TEAMS',
     name VARCHAR(80)  DEFAULT '' UNIQUE ,
-	create_dt datetime default current_timestamp,
-  	update_dt datetime default current_timestamp
+	create_dt datetime default (datetime('now', 'localtime')),
+  	update_dt datetime default (datetime('now', 'localtime'))
 );
 `
 

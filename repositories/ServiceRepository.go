@@ -87,7 +87,7 @@ func UpdateService(service *models.Service) error {
 	tx := db.MustBegin()
 	query := ` UPDATE service SET url = :url,
 							name = :name,
-							 update_dt = current_timestamp
+							 update_dt = datetime('now', 'localtime')
 				WHERE id = :id`
 	tx.NamedExec(query, &service)
 	err := tx.Commit()
@@ -111,7 +111,7 @@ func UpdateServiceStatusCode(service *models.Service) error {
 
 	tx := db.MustBegin()
 	query := ` UPDATE service SET status = :status,
-							 update_dt = current_timestamp
+							 update_dt = datetime('now', 'localtime')
 				WHERE id = :id`
 	tx.NamedExec(query, &service)
 	err := tx.Commit()

@@ -61,7 +61,7 @@ func UpdateHook(hook *models.Hook) error {
 	tx := db.MustBegin()
 	query := ` UPDATE hook SET url = :url,
 							name = :name,
-							 update_dt = current_timestamp
+							 update_dt = datetime('now', 'localtime')
 				WHERE id = :id`
 	tx.NamedExec(query, &hook)
 

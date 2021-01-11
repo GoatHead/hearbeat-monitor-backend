@@ -20,7 +20,7 @@ func GetServiceHistory(c *gin.Context) {
 	var err2 error
 	var cnt int
 	var serviceList *[]models.Service
-	bindErr := c.BindJSON(&searchCondition)
+	bindErr := c.ShouldBind(&searchCondition)
 	var result pagedServiceHistory
 	if bindErr == nil {
 

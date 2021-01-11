@@ -21,6 +21,8 @@ func GetServiceHistory(searchCondition *models.SearchCondition) (*[]models.Servi
 
 	query += getWhereClause(searchCondition, &args, &param)
 
+	query += ` ORDER BY create_dt desc `
+
 	if searchCondition == nil {
 		query += ` LIMIT 10 OFFSET 0 `
 	} else {
