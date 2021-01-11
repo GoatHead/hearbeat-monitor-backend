@@ -9,3 +9,8 @@ func GetServiceHistory(searchCondition *models.SearchCondition) (*[]models.Servi
 	service, err := repositories.GetServiceHistory(searchCondition)
 	return service, err
 }
+
+func GetServiceHistoryCnt(searchCondition *models.SearchCondition) (int, error) {
+	cnt, err := repositories.GetServiceHistoryCnt(searchCondition)
+	return cnt, err
+}

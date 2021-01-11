@@ -7,27 +7,59 @@ import (
 	"net/http"
 )
 
+type pagedServiceHistory struct {
+	Page int `json:"page"`
+	PageSize int `json:"pageSize"`
+	ItemCount int `json:"itemCount"`
+	Data []models.Service `json:"data"`
+}
+
 func GetServiceHistory(c *gin.Context) {
 	var searchCondition *models.SearchCondition
-	var err error
+	var err1 error
+	var err2 error
+	var cnt int
 	var serviceList *[]models.Service
 	bindErr := c.BindJSON(&searchCondition)
+	var result pagedServiceHistory
 	if bindErr == nil {
-		serviceList, err = services.GetServiceHistory(searchCondition)
+
+		cnt, err1 = services.GetServiceHistoryCnt(searchCondition)
+		serviceList, err2 = services.GetServiceHistory(searchCondition)
+		result = pagedServiceHistory{
+			Page: searchCondition.PageStart,
+			PageSize: searchCondition.PageSize,
+			Data: nil,
+		}
+
+		if serviceList != nil {
+			result.ItemCount = cnt
+			result.Data = *serviceList
+		}
 	}
-	if err != nil {
+
+	errorString := ""
+	if err1 != nil {
+		errorString += err1.Error() + "\n"
+	}
+	if err2 != nil {
+		errorString += err2.Error() + "\n"
+	}
+
+	if errorString != "" {
 		errorLogger := gin.DefaultErrorWriter
-		errorLogger.Write([]byte(err.Error() + "\n"))
+		errorLogger.Write([]byte(errorString + "\n"))
 		c.JSON(http.StatusOK, gin.H{
 			"status": "FAIL",
 			"data": nil,
-			"message": err.Error(),
+			"message": errorString,
 		})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "SUCCESS",
-		"data": serviceList,
+		"data": result,
 		"message": "하트비트 검사 이력 조회에 성공하였습니다.",
 	})
 }
