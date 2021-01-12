@@ -52,6 +52,8 @@ func AddHook(hook *models.Hook) error {
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
+	db.Close()
+
 	return err
 }
 
@@ -77,6 +79,8 @@ func UpdateHook(hook *models.Hook) error {
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
+	db.Close()
+
 	return err
 }
 
@@ -96,6 +100,8 @@ func DeleteHook(hook *models.Hook) error {
 
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
+
+	db.Close()
 
 	return err
 }

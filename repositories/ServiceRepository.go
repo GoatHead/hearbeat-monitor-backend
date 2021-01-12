@@ -78,6 +78,8 @@ func AddService(service *models.Service) error {
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
+	db.Close()
+
 	return err
 }
 
@@ -103,6 +105,8 @@ func UpdateService(service *models.Service) error {
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
+	db.Close()
+
 	return err
 }
 
@@ -126,6 +130,8 @@ func UpdateServiceStatusCode(service *models.Service) error {
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
+	db.Close()
+
 	return err
 }
 
@@ -145,6 +151,8 @@ func DeleteService(service *models.Service) error {
 
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
+
+	db.Close()
 
 	return err
 }

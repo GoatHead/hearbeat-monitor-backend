@@ -53,5 +53,7 @@ func UpdateApplicationSettings(setting *models.ApplicationSettings) error {
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
+	db.Close()
+
 	return err
 }

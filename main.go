@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 	"goathead/heartbeat-monitor-backend/controllers"
@@ -17,10 +18,12 @@ func main() {
 	flag.Parse()
 
 	r := gin.Default()
+	pprof.Register(r)
 
 	r.Use(CORSMiddleware())
 
-	database.GetDbConnector()
+	db, _ := database.GetDbConnector()
+	db.Close()
 
 	scheduler.ScheduledHeartBeat()
 

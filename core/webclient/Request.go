@@ -1,8 +1,10 @@
 package webclient
 
 import (
+	"net"
 	"net/http"
 	"strings"
+	"time"
 )
 
 func Request(url string) int {
@@ -17,7 +19,21 @@ func Request(url string) int {
 	request, _ := http.NewRequest("GET", url, reader)
 	var resultCode int
 
-	client := &http.Client{}
+	keepAliveTimeout:= 600 * time.Second
+	timeout:= 10 * time.Second
+	defaultTransport := &http.Transport{
+		Dial: (&net.Dialer{
+			KeepAlive: keepAliveTimeout,
+		}).Dial,
+		MaxIdleConns: 100,
+		MaxIdleConnsPerHost: 100,
+	}
+
+	client := &http.Client{
+		Transport: defaultTransport,
+		Timeout: timeout,
+	}
+
 	res, err := client.Do(request)
 
 	if err != nil {
@@ -26,12 +42,33 @@ func Request(url string) int {
 		resultCode = res.StatusCode
 	}
 
+	if res != nil {
+		defer res.Body.Close()
+	}
+
+	client.CloseIdleConnections()
+
 	return resultCode
 }
 
 func Post(url string, body string) {
 	reader := strings.NewReader(body)
 	request, _ := http.NewRequest("POST", url, reader)
-	client := &http.Client{}
-	client.Do(request)
+	keepAliveTimeout:= 600 * time.Second
+	timeout:= 10 * time.Second
+	defaultTransport := &http.Transport{
+		Dial: (&net.Dialer{
+			KeepAlive: keepAliveTimeout,
+		}).Dial,
+		MaxIdleConns: 100,
+		MaxIdleConnsPerHost: 100,
+	}
+
+	client := &http.Client{
+		Transport: defaultTransport,
+		Timeout: timeout,
+	}
+	resp, _ := client.Do(request)
+	defer resp.Body.Close()
+	client.CloseIdleConnections()
 }
