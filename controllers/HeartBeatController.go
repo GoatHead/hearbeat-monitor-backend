@@ -7,6 +7,7 @@ import (
 	"goathead/heartbeat-monitor-backend/core/webclient"
 	"goathead/heartbeat-monitor-backend/services"
 	"net/http"
+	"time"
 )
 
 type IdList struct {
@@ -16,6 +17,8 @@ type IdList struct {
 type testResult struct {
 	Url string `json:"url"`
 	Status int `json:"status"`
+	Datetime string `json:"datetime"`
+	Name string `json:"name"`
 }
 
 func TestList(c *gin.Context) {
@@ -87,7 +90,11 @@ func testServiceList(serviceList *[]models.Service) []testResult {
 		for _, service := range *serviceList {
 			url := service.Url
 			status := webclient.Request(url)
-			elem := testResult{Url: url, Status: status}
+			name := service.Name
+			t := time.Now()
+			layout := "2006-01-02 15:04:05"
+			timeString := t.Format(layout)
+			elem := testResult{Name: name, Url: url, Status: status, Datetime: timeString}
 			resultList = append(resultList, elem)
 		}
 	}
