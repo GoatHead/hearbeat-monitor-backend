@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 	"goathead/heartbeat-monitor-backend/controllers"
@@ -11,6 +13,9 @@ import (
 )
 
 func main() {
+	port := flag.String("port", "8080", "setting backend server port")
+	flag.Parse()
+
 	r := gin.Default()
 
 	r.Use(CORSMiddleware())
@@ -38,14 +43,22 @@ func main() {
 	r.POST("/api/heartbeat/testAll", controllers.TestAll)
 
 	s := &http.Server{
-		Addr:           ":8080",
+		Addr:           ":" + *port,
 		Handler:        r,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	s.ListenAndServe()
+	logger := gin.DefaultWriter
+	logger.Write([]byte(fmt.Sprintf("PORT: %s\n", *port)))
+
+	err := s.ListenAndServe()
+
+	if err != nil {
+		errorLogger := gin.DefaultErrorWriter
+		errorLogger.Write([]byte(err.Error() + "\n"))
+	}
 }
 
 func CORSMiddleware() gin.HandlerFunc {
