@@ -30,7 +30,9 @@ func TestList(c *gin.Context) {
 
 	if idList != nil {
 		idListParams := idList.Id
-		serviceList, err = services.GetServiceByIdList(idListParams)
+		if len(idListParams) > 0 {
+			serviceList, err = services.GetServiceByIdList(idListParams)
+		}
 
 		if serviceList != nil {
 			resultList = testServiceList(serviceList)
