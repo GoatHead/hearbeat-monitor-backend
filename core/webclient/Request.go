@@ -4,11 +4,30 @@ import (
 	"crypto/tls"
 	"io"
 	"io/ioutil"
-	"net"
 	"net/http"
 	"strings"
 	"time"
 )
+
+
+var client *http.Client
+
+func getClient() *http.Client {
+	if client == nil {
+		timeout:= 10 * time.Second
+		defaultTransport := &http.Transport{
+			DisableKeepAlives: true,
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+
+		client = &http.Client{
+			Transport: defaultTransport,
+			Timeout: timeout,
+		}
+	}
+	client.CloseIdleConnections()
+	return client
+}
 
 func Request(url string) int {
 	reader := strings.NewReader(`
@@ -22,22 +41,7 @@ func Request(url string) int {
 	request, _ := http.NewRequest("GET", url, reader)
 	var resultCode int
 
-	keepAliveTimeout:= 600 * time.Second
-	timeout:= 10 * time.Second
-	defaultTransport := &http.Transport{
-		Dial: (&net.Dialer{
-			KeepAlive: keepAliveTimeout,
-		}).Dial,
-		MaxIdleConns: 100,
-		MaxIdleConnsPerHost: 100,
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-
-	client := &http.Client{
-		Transport: defaultTransport,
-		Timeout: timeout,
-	}
-	defer client.CloseIdleConnections()
+	client := getClient()
 
 	res, err := client.Do(request)
 
@@ -46,36 +50,26 @@ func Request(url string) int {
 	}
 
 	if res != nil {
-		defer res.Body.Close()
 		resultCode = res.StatusCode
-		_, _ = io.Copy(ioutil.Discard, res.Body)
+		io.Copy(ioutil.Discard, res.Body)
+		res.Body.Close()
 	}
 
+	client.CloseIdleConnections()
 	return resultCode
 }
 
 func Post(url string, body string) {
 	reader := strings.NewReader(body)
 	request, _ := http.NewRequest("POST", url, reader)
-	keepAliveTimeout:= 600 * time.Second
-	timeout:= 10 * time.Second
-	defaultTransport := &http.Transport{
-		Dial: (&net.Dialer{
-			KeepAlive: keepAliveTimeout,
-		}).Dial,
-		MaxIdleConns: 100,
-		MaxIdleConnsPerHost: 100,
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
 
-	client := &http.Client{
-		Transport: defaultTransport,
-		Timeout: timeout,
-	}
-	defer client.CloseIdleConnections()
+	client := getClient()
 
 	resp, _ := client.Do(request)
-	defer resp.Body.Close()
-	_, _ = io.Copy(ioutil.Discard, resp.Body)
 
+	io.Copy(ioutil.Discard, resp.Body)
+
+	resp.Body.Close()
+
+	client.CloseIdleConnections()
 }
