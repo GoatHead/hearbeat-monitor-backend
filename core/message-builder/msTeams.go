@@ -88,7 +88,7 @@ func getStatusString(status int) string {
 	case switchStatus >= 500 && switchStatus < 600:
 		result = "서버 오류"
 	case switchStatus == -1:
-		result = "존재하지 않는 도메인"
+		result = "존재하지 않는 도메인 또는 SSL 인증 실패"
 	default:
 		result = "기타 이상"
 	}

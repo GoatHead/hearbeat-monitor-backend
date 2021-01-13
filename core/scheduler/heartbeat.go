@@ -51,10 +51,11 @@ func heartBeat() {
 	if serviceList != nil {
 		if len(*serviceList) > 0 && err == nil {
 
-			for _, service := range *serviceList {
+			for i, service := range *serviceList {
 
 				statusCode := services.CheckHeartBeat(&service)
 				service.Status = statusCode
+				(*serviceList)[i].Status = statusCode
 
 				log := "===HeartBeat===\n"
 				log += "url: " + service.Url
