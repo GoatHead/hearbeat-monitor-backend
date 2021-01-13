@@ -48,7 +48,10 @@ func GetServiceByIdList(idList []int) (*[]models.Service, error){
 	param += "ids=" + fmt.Sprint(idList)
 
 	query = db.Rebind(query)
-	err := db.Select(&services, query, args...)
+	var err error
+	if query != "" {
+		err = db.Select(&services, query, args...)
+	}
 
 	logger := gin.DefaultWriter
 	logger.Write([]byte("query:" + query + "\n"))
