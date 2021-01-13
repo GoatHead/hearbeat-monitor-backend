@@ -11,6 +11,7 @@ import (
 
 func GetService(service *models.Service) (*[]models.Service, error){
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	var services []models.Service
 
@@ -27,8 +28,6 @@ func GetService(service *models.Service) (*[]models.Service, error){
 
 	err := db.Select(&services, query)
 
-	db.Close()
-
 	logger := gin.DefaultWriter
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
@@ -38,6 +37,7 @@ func GetService(service *models.Service) (*[]models.Service, error){
 
 func GetServiceByIdList(idList []int) (*[]models.Service, error){
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	var services []models.Service
 
@@ -50,8 +50,6 @@ func GetServiceByIdList(idList []int) (*[]models.Service, error){
 	query = db.Rebind(query)
 	err := db.Select(&services, query, args...)
 
-	db.Close()
-
 	logger := gin.DefaultWriter
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
@@ -61,6 +59,7 @@ func GetServiceByIdList(idList []int) (*[]models.Service, error){
 
 func AddService(service *models.Service) error {
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	tx := db.MustBegin()
 	query := ` INSERT INTO service (url, name, status) VALUES (:url, :name, :status) `
@@ -78,13 +77,12 @@ func AddService(service *models.Service) error {
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
-	db.Close()
-
 	return err
 }
 
 func UpdateService(service *models.Service) error {
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	tx := db.MustBegin()
 	query := ` UPDATE service SET url = :url,
@@ -105,13 +103,12 @@ func UpdateService(service *models.Service) error {
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
-	db.Close()
-
 	return err
 }
 
 func UpdateServiceStatusCode(service *models.Service) error {
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	tx := db.MustBegin()
 	query := ` UPDATE service SET status = :status,
@@ -130,13 +127,12 @@ func UpdateServiceStatusCode(service *models.Service) error {
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
-	db.Close()
-
 	return err
 }
 
 func DeleteService(service *models.Service) error {
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	tx := db.MustBegin()
 	query := ` DELETE FROM service WHERE id = :id `
@@ -151,8 +147,6 @@ func DeleteService(service *models.Service) error {
 
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
-
-	db.Close()
 
 	return err
 }

@@ -10,6 +10,7 @@ import (
 func GetHook(hook *models.Hook) (*[]models.Hook, error){
 	logger := gin.DefaultWriter
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	var hooks []models.Hook
 
@@ -29,13 +30,12 @@ func GetHook(hook *models.Hook) (*[]models.Hook, error){
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
-	db.Close()
-
 	return &hooks, err
 }
 
 func AddHook(hook *models.Hook) error {
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	tx := db.MustBegin()
 	query := ` INSERT INTO hook (url, name) VALUES (:url, :name) `
@@ -52,13 +52,12 @@ func AddHook(hook *models.Hook) error {
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
-	db.Close()
-
 	return err
 }
 
 func UpdateHook(hook *models.Hook) error {
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	tx := db.MustBegin()
 	query := ` UPDATE hook SET url = :url,
@@ -79,13 +78,12 @@ func UpdateHook(hook *models.Hook) error {
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
-	db.Close()
-
 	return err
 }
 
 func DeleteHook(hook *models.Hook) error {
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	tx := db.MustBegin()
 	query := ` DELETE FROM hook WHERE id = :id `
@@ -100,8 +98,6 @@ func DeleteHook(hook *models.Hook) error {
 
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
-
-	db.Close()
 
 	return err
 }

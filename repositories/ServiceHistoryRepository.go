@@ -10,6 +10,7 @@ import (
 
 func GetServiceHistory(searchCondition *models.SearchCondition) (*[]models.Service, error){
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	var services []models.Service
 
@@ -42,8 +43,6 @@ func GetServiceHistory(searchCondition *models.SearchCondition) (*[]models.Servi
 
 	err := db.Select(&services, query, args...)
 
-	db.Close()
-
 	logger := gin.DefaultWriter
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
@@ -53,6 +52,7 @@ func GetServiceHistory(searchCondition *models.SearchCondition) (*[]models.Servi
 
 func GetServiceHistoryCnt(searchCondition *models.SearchCondition) (int, error){
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	var count int
 
@@ -67,8 +67,6 @@ func GetServiceHistoryCnt(searchCondition *models.SearchCondition) (int, error){
 	row := db.QueryRow(query, args...)
 	err := row.Scan(&count)
 
-	db.Close()
-
 	logger := gin.DefaultWriter
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
@@ -78,6 +76,7 @@ func GetServiceHistoryCnt(searchCondition *models.SearchCondition) (int, error){
 
 func AddServiceHistory(service *models.Service) error {
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	tx := db.MustBegin()
 	query := ` INSERT INTO service_history (url, name, status) VALUES (:url, :name, :status) `
@@ -94,8 +93,6 @@ func AddServiceHistory(service *models.Service) error {
 
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
-
-	db.Close()
 
 	return err
 }

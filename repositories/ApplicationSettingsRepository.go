@@ -10,6 +10,7 @@ import (
 func GetApplicationSettings(setting *models.ApplicationSettings) (*models.ApplicationSettings, error){
 	logger := gin.DefaultWriter
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	var settings[] models.ApplicationSettings
 
@@ -29,15 +30,15 @@ func GetApplicationSettings(setting *models.ApplicationSettings) (*models.Applic
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
-	db.Close()
-
 	return &settings[0], err
 }
 
 func UpdateApplicationSettings(setting *models.ApplicationSettings) error {
 	db, _ := database.GetDbConnector()
+	defer db.Close()
 
 	tx := db.MustBegin()
+
 	query := ` UPDATE application_settings SET cycleSec = :cycleSec
 				WHERE id = :id`
 	tx.NamedExec(query, &setting)
@@ -53,7 +54,6 @@ func UpdateApplicationSettings(setting *models.ApplicationSettings) error {
 	logger.Write([]byte("query:" + query + "\n"))
 	logger.Write([]byte(param + "\n"))
 
-	db.Close()
 
 	return err
 }

@@ -1,6 +1,8 @@
 package webclient
 
 import (
+	"io"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"strings"
@@ -33,20 +35,19 @@ func Request(url string) int {
 		Transport: defaultTransport,
 		Timeout: timeout,
 	}
+	defer client.CloseIdleConnections()
 
 	res, err := client.Do(request)
 
 	if err != nil {
 		resultCode = -1
-	} else {
-		resultCode = res.StatusCode
 	}
 
 	if res != nil {
 		defer res.Body.Close()
+		resultCode = res.StatusCode
+		_, _ = io.Copy(ioutil.Discard, res.Body)
 	}
-
-	client.CloseIdleConnections()
 
 	return resultCode
 }
@@ -68,7 +69,10 @@ func Post(url string, body string) {
 		Transport: defaultTransport,
 		Timeout: timeout,
 	}
+	defer client.CloseIdleConnections()
+
 	resp, _ := client.Do(request)
 	defer resp.Body.Close()
-	client.CloseIdleConnections()
+	_, _ = io.Copy(ioutil.Discard, resp.Body)
+
 }
