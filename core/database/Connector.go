@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS hook (
 `
 
 func GetDbConnector() (*sqlx.DB, error) {
-	db, err := sqlx.Connect("sqlite3", "_service_list.db")
+	db, err := sqlx.Connect("sqlite3", "../db/_service_list.db")
 	logger := gin.DefaultWriter
 	errorLogger := gin.DefaultErrorWriter
 	if err != nil {
