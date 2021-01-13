@@ -1,6 +1,7 @@
 package webclient
 
 import (
+	"crypto/tls"
 	"io"
 	"io/ioutil"
 	"net"
@@ -29,6 +30,7 @@ func Request(url string) int {
 		}).Dial,
 		MaxIdleConns: 100,
 		MaxIdleConnsPerHost: 100,
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 
 	client := &http.Client{
@@ -63,6 +65,7 @@ func Post(url string, body string) {
 		}).Dial,
 		MaxIdleConns: 100,
 		MaxIdleConnsPerHost: 100,
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 
 	client := &http.Client{
